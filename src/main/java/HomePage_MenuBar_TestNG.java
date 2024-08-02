@@ -32,8 +32,7 @@ public class HomePage_MenuBar_TestNG {
 
     @Test
     public void ExploreButtonTest(){
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        beforeClass();
         driver.get("https://ancabota09.wixsite.com/intern");
 
         WebElement exploreButton = driver.findElement(By.id("i6kl732v1"));
@@ -45,13 +44,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedExplorePageUrl = "https://ancabota09.wixsite.com/intern/explore";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedExplorePageUrl), "Explore button did not redirect to the explore page.");
-        driver.quit();
+        afterClass();
     }
 
     @Test
     public void RoomsButtonTest(){
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        beforeClass();
         driver.get("https://ancabota09.wixsite.com/intern");
 
         WebElement roomsLink = driver.findElement(By.id("i6kl732v2label"));
@@ -63,13 +61,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedRoomsPageUrl = "https://ancabota09.wixsite.com/intern/rooms"; // Adjust the URL as needed
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedRoomsPageUrl), "Rooms link did not teleport us to the rooms page.");
-        driver.quit();
+        afterClass();
     }
 
     @Test
     public void ContactButtonTest(){
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        beforeClass();
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement contactLink = driver.findElement(By.id("i6kl732v3"));
 
@@ -80,13 +77,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedContactPageUrl = "https://ancabota09.wixsite.com/intern/contact"; // Adjust the URL as needed
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedContactPageUrl), "Contact link did not teleport us to the contact page.");
-        driver.quit();
+        afterClass();
     }
 
     @Test
     public void BookNowButtonTest(){
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        beforeClass();
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement bookNowLink = driver.findElement(By.id("i6tj0u8x"));
 
@@ -97,13 +93,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedBookNowPageUrl = "https://ancabota09.wixsite.com/intern/booknow"; // Adjust the URL as needed
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedBookNowPageUrl), "BookNow link did not teleport us to the Book Now page.");
-        driver.quit();
+        afterClass();
     }
 
     @Test
     public void HomeButtonTest(){
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        beforeClass();
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement homeLink = driver.findElement(By.id("i6kl732v0"));
 
@@ -112,13 +107,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedHomePageUrl = "https://ancabota09.wixsite.com/intern";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedHomePageUrl), "Home button did not redirect to the Home Page");
-        driver.quit();
+        afterClass();
     }
 
     @Test
     public void LogoButtonTest(){
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        beforeClass();
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement logoLink = driver.findElement(By.id("i6ksxrtk"));
 
@@ -127,6 +121,6 @@ public class HomePage_MenuBar_TestNG {
         String expectedLogoUrl = "https://ancabota09.wixsite.com/intern";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedLogoUrl), "Logo button did not redirect to the Home Page");
-        driver.quit();
+        afterClass();
     }
 }
