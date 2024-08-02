@@ -37,6 +37,16 @@ public class HomePage_FooterButtons_TestNG {
         WebElement facebookLink = driver.findElement(By.xpath("//*[@id=\"img_0_i6rlbitx\"]/img"));
         facebookLink.click();
 
+        // Switch to the new tab (assuming it opens in a new tab)
+        String originalWindowHandle = driver.getWindowHandle();
+        for (String windowHandle : driver.getWindowHandles()) {
+            if (!windowHandle.equals(originalWindowHandle)) {
+                driver.switchTo().window(windowHandle);
+                break;
+            }
+        }
+
+        // Verify the URL
         String expectedLogoUrl = "https://www.facebook.com/wix";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedLogoUrl), "Facebook logo button did not redirect to the Facebook Page");
