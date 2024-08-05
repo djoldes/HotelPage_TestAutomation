@@ -9,20 +9,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 //--
 import org.testng.Assert;
 //--
-import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 //--
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 //--
 import org.testng.annotations.Test;
-
-import java.util.Set;
 
 public class HomePage_FooterButtons_TestNG {
     private WebDriver driver;
     String mainWindowHandle;
 
-    @BeforeClass
-    public void beforeClass() {
+    @BeforeMethod
+    public void beforeMethod() {
         //System.setProperty("webdriver.chrome.driver", "path/to/chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
@@ -30,20 +28,19 @@ public class HomePage_FooterButtons_TestNG {
         mainWindowHandle = driver.getWindowHandle();
     }
 
-    @AfterClass
-    public void afterClass() {
+    @AfterMethod
+    public void afterMethod() {
         driver.quit();
     }
 
     @Test
-    private void FacebookLogoButtonTest(){
-
-        driver.get("https://ancabota09.wixsite.com/intern");
+    private void FacebookLogoButtonTest() throws InterruptedException {
         WebElement facebookLink = driver.findElement(By.xpath("//*[@id=\"img_0_i6rlbitx\"]/img"));
         if(facebookLink.isDisplayed()) {
             facebookLink.click();
-
+            Thread.sleep(10000);
             String originalWindowHandle = driver.getWindowHandle();
+
             for (String windowHandle : driver.getWindowHandles()) {
                 if (!windowHandle.equals(originalWindowHandle)) {
                     driver.switchTo().window(windowHandle);
@@ -54,9 +51,9 @@ public class HomePage_FooterButtons_TestNG {
 
         String expectedLogoUrl = "https://www.facebook.com/wix";
         String actualUrl = driver.getCurrentUrl();
+        System.out.println(actualUrl);
         Assert.assertTrue(actualUrl.contains(expectedLogoUrl), "Facebook logo button did not redirect to the Facebook Page");
 
-        driver.switchTo().window(mainWindowHandle);
     }
 
     @Test
@@ -78,6 +75,7 @@ public class HomePage_FooterButtons_TestNG {
         String expectedLogoUrl = "https://x.com/wix";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedLogoUrl), "X logo button did not redirect to the X Page");
+
     }
 
     @Test
@@ -100,6 +98,7 @@ public class HomePage_FooterButtons_TestNG {
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedLogoUrl), "Creator logo button did not redirect to the Creator Page");
         driver.switchTo().window(mainWindowHandle);
+
     }
 
     @Test
@@ -125,17 +124,13 @@ public class HomePage_FooterButtons_TestNG {
     }
 
     @Test
-    private void MailToButtonTest(){
+    private void MailToButtonTest() throws InterruptedException {
 
         WebElement mailToButton = driver.findElement(By.xpath("//*[@id=\"i71ww6nk\"]/p[1]/a"));
-        if(mailToButton.isDisplayed()){
-            mailToButton.click();
+        String email = mailToButton.getAttribute("href");
+        Assert.assertEquals(email, "mailto:info@mysite.com", "Button not contain mailto tag in href tag");
 
-          //  String parentWindowHandle = driver.getWindowHandle();
 
-           // Set<String> allWindowHandles = driver.getWindowHandles();
-        }
-        driver.close();
     }
 
     @Test
