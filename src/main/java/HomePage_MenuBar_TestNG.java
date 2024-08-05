@@ -9,30 +9,30 @@ import org.openqa.selenium.chrome.ChromeDriver;
 //--
 import org.testng.Assert;
 //--
-import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 //--
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 //--
 import org.testng.annotations.Test;
 
 public class HomePage_MenuBar_TestNG {
     private WebDriver driver;
 
-    @BeforeClass
+    @BeforeMethod
     public void beforeClass() {
         //System.setProperty("webdriver.chrome.driver", "path/to/chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
     }
 
-    @AfterClass
+    @AfterMethod
     public void afterClass() {
         driver.quit();
     }
 
     @Test
     public void ExploreButtonTest(){
-        beforeClass();
+
         driver.get("https://ancabota09.wixsite.com/intern");
 
         WebElement exploreButton = driver.findElement(By.id("i6kl732v1"));
@@ -44,12 +44,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedExplorePageUrl = "https://ancabota09.wixsite.com/intern/explore";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedExplorePageUrl), "Explore button did not redirect to the explore page.");
-        afterClass();
+
     }
 
     @Test
     public void RoomsButtonTest(){
-        beforeClass();
+
         driver.get("https://ancabota09.wixsite.com/intern");
 
         WebElement roomsLink = driver.findElement(By.id("i6kl732v2label"));
@@ -61,12 +61,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedRoomsPageUrl = "https://ancabota09.wixsite.com/intern/rooms"; // Adjust the URL as needed
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedRoomsPageUrl), "Rooms link did not teleport us to the rooms page.");
-        afterClass();
+
     }
 
     @Test
     public void ContactButtonTest(){
-        beforeClass();
+
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement contactLink = driver.findElement(By.id("i6kl732v3"));
 
@@ -77,12 +77,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedContactPageUrl = "https://ancabota09.wixsite.com/intern/contact"; // Adjust the URL as needed
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedContactPageUrl), "Contact link did not teleport us to the contact page.");
-        afterClass();
+
     }
 
     @Test
     public void BookNowButtonTest(){
-        beforeClass();
+
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement bookNowLink = driver.findElement(By.id("i6tj0u8x"));
 
@@ -92,13 +92,13 @@ public class HomePage_MenuBar_TestNG {
         // Verify that the current URL contains the expected path for the rooms page
         String expectedBookNowPageUrl = "https://ancabota09.wixsite.com/intern/booknow"; // Adjust the URL as needed
         String actualUrl = driver.getCurrentUrl();
-        Assert.assertTrue(actualUrl.contains(expectedBookNowPageUrl), "BookNow link did not teleport us to the Book Now page.");
-        afterClass();
+        Assert.assertTrue(actualUrl.contains(expectedBookNowPageUrl), "BookNow link did not redirect you to the Book Now page.");
+
     }
 
     @Test
     public void HomeButtonTest(){
-        beforeClass();
+
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement homeLink = driver.findElement(By.id("i6kl732v0"));
 
@@ -107,12 +107,12 @@ public class HomePage_MenuBar_TestNG {
         String expectedHomePageUrl = "https://ancabota09.wixsite.com/intern";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedHomePageUrl), "Home button did not redirect to the Home Page");
-        afterClass();
+
     }
 
     @Test
     public void LogoButtonTest(){
-        beforeClass();
+
         driver.get("https://ancabota09.wixsite.com/intern");
         WebElement logoLink = driver.findElement(By.id("i6ksxrtk"));
 
@@ -121,6 +121,6 @@ public class HomePage_MenuBar_TestNG {
         String expectedLogoUrl = "https://ancabota09.wixsite.com/intern";
         String actualUrl = driver.getCurrentUrl();
         Assert.assertTrue(actualUrl.contains(expectedLogoUrl), "Logo button did not redirect to the Home Page");
-        afterClass();
+
     }
 }
