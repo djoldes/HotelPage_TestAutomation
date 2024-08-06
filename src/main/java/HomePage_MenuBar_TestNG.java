@@ -22,9 +22,9 @@ public class HomePage_MenuBar_TestNG {
 
     @BeforeMethod
     public void beforeMethod() {
-        //System.setProperty("webdriver.chrome.driver", "path/to/chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+        driver.get("https://ancabota09.wixsite.com/intern");
     }
 
     @AfterMethod
@@ -34,8 +34,6 @@ public class HomePage_MenuBar_TestNG {
 
     @Test
     public void ExploreButtonTest(){
-
-        driver.get("https://ancabota09.wixsite.com/intern");
 
         WebElement exploreButton = driver.findElement(By.id("i6kl732v1"));
 
@@ -69,8 +67,6 @@ public class HomePage_MenuBar_TestNG {
     @Test
     public void RoomsButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
-
         WebElement roomsLink = driver.findElement(By.id("i6kl732v2label"));
 
         String colorBeforeHover = roomsLink.getCssValue("color");
@@ -103,7 +99,6 @@ public class HomePage_MenuBar_TestNG {
     @Test
     public void ContactButtonTest() throws InterruptedException {
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement contactLink = driver.findElement(By.id("i6kl732v3"));
 
         String colorBeforeHover = contactLink.getCssValue("color");
@@ -136,7 +131,6 @@ public class HomePage_MenuBar_TestNG {
     @Test
     public void BookNowButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement bookNowLink = driver.findElement(By.id("i6tj0u8x"));
 
         String colorBeforeHover = bookNowLink.getCssValue("color");
@@ -169,7 +163,6 @@ public class HomePage_MenuBar_TestNG {
     @Test
     public void HomeButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement homeLink = driver.findElement(By.id("i6kl732v0"));
 
         homeLink.click();
@@ -183,7 +176,6 @@ public class HomePage_MenuBar_TestNG {
     @Test
     public void LogoButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement logoLink = driver.findElement(By.id("i6ksxrtk"));
 
         logoLink.click();
