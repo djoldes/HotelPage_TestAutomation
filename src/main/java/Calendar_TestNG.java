@@ -2,6 +2,7 @@
 //--
 //import javafx.scene.web.WebEngine;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 //--
 //--
@@ -43,7 +44,7 @@ public class Calendar_TestNG{
 
     LocalDate today = LocalDate.now();
     @Test
-    private void DateHiglightedCalendar(){
+    private void DateHiglightedCalendarCheckInCalendar(){
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -65,7 +66,7 @@ public class Calendar_TestNG{
     }
 
     @Test
-    private void FutureDateSelection() throws InterruptedException {
+    private void FutureDateSelectionCheckInCalendar() throws InterruptedException {
         //open the checkin calendar
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -96,7 +97,7 @@ public class Calendar_TestNG{
     }
 
     @Test
-    private void TodayDateSelection(){
+    private void TodayDateSelectionCheckInCalendar(){
         //open check in calendar
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -126,7 +127,7 @@ public class Calendar_TestNG{
     }
 
     @Test
-    public void PastDaySelection(){
+    private void PastDaySelectionCheckInCalendar(){
         //open check in calendar
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -152,7 +153,7 @@ public class Calendar_TestNG{
     }
 
     @Test
-    public void PrevoiusMonth(){
+    private void PrevoiusMonthCheckInCalendar(){
         //open check in calendar
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -171,11 +172,11 @@ public class Calendar_TestNG{
         WebElement actualMonthLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/main/div/div[1]")));
         String actualMonthName = actualMonthLabel.getText();
         String previousMonthName = today.minusMonths(1).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-        Assert.assertTrue(actualMonthName.contains(previousMonthName), "Previous Month date is not displayed correctly.");
+        Assert.assertTrue(actualMonthName.contains(previousMonthName), "Previous Month is not displayed correctly.");
     }
 
     @Test
-    public void NextMonth(){
+    private void NextMonthCheckInCalendar(){
         //open check in calendar
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -198,7 +199,7 @@ public class Calendar_TestNG{
     }
 
     @Test
-    public void CloseButton() throws InterruptedException {
+    private void CloseButtonCheckInCalendar() throws InterruptedException {
         //open check in calendar
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -221,7 +222,7 @@ public class Calendar_TestNG{
     }
 
     @Test
-    public void CheckOutNextDay() throws InterruptedException {
+    private void CheckOutNextDay() throws InterruptedException {
         //open check in calendar
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
@@ -271,6 +272,150 @@ public class Calendar_TestNG{
             softAssert.assertEquals(checkOutDateSelected.getText(), expectedDate, "Cannot select "+tommorrow+" as a checkout date!");
         }catch (Exception e){
             softAssert.assertTrue(checkOutDateButton.isEnabled(), "Cannot select tommorow as a check-out date.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void PreviousMonthCheckOutCalendar(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+
+        //finding and opening the checkout calendar
+        WebElement checkOutCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]")));
+        checkOutCalendarButton.click();
+        driver.switchTo().defaultContent();
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        driver.switchTo().frame(checkOutCalendarFrame);
+
+        //obtaining and comparing the months names
+        WebElement previousMonthButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/nav/button[1]")));
+        previousMonthButton.click();
+        WebElement actualMonthLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/main/div/div[1]")));
+        String actualMonthName = actualMonthLabel.getText();
+        String previousMonthName = today.minusMonths(1).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        Assert.assertTrue(actualMonthName.contains(previousMonthName), "Previous Month is not displayed correctly.");
+    }
+
+    @Test
+    private void NextMonthCheckOutCalendar(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+
+        //finding and opening the checkout calendar
+        WebElement checkOutCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]")));
+        checkOutCalendarButton.click();
+        driver.switchTo().defaultContent();
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        driver.switchTo().frame(checkOutCalendarFrame);
+
+        //obtaining and comparing the months names
+        WebElement nextMonthButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/nav/button[2]")));
+        nextMonthButton.click();
+        WebElement actualMonthLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div/main/div/div[1]")));
+        String actualMonthName = actualMonthLabel.getText();
+        String nextMonthName = today.plusMonths(1).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        Assert.assertTrue(actualMonthName.contains(nextMonthName), "Next Month date is not displayed correctly.");
+    }
+
+    @Test
+    private void CloseButtonCheckOutCalendar(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+
+        //finding and opening the checkout calendar
+        WebElement checkOutCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]")));
+        checkOutCalendarButton.click();
+        driver.switchTo().defaultContent();
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        driver.switchTo().frame(checkOutCalendarFrame);
+
+        WebElement closeButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='close ng-scope']")));
+        closeButton.click();
+        //verify if the checkout calendar is closed after clicking on the close button
+        driver.switchTo().frame(mainFrame);
+        boolean isCalendarClosed = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]"))).isDisplayed();
+        Assert.assertTrue(isCalendarClosed, "Check Out calendar is not closed!");
+    }
+
+    @Test
+    private void AdultsIncreaseButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+
+        //searching the AdultsIncrease Button and increasing the number of Adults to 2
+        SoftAssert softAssert = new SoftAssert();
+        WebElement adultsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        softAssert.assertTrue(adultsIncreaseButton.isDisplayed(),"Adults increase button is not displayed.");
+        try{
+            adultsIncreaseButton.click();
+            WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String  currentAdultsNumber = adultsNumberLabel.getText();
+            softAssert.assertEquals(currentAdultsNumber, "2", "Adults number did not increase correctly.");
+        } catch (Exception e){
+            System.out.println("Adults increase button cannot be clicked.");
+        }
+
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void AdultsDecreaseButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+
+        //searching the AdultsIncrease Button and increasing the number of Adults to 2
+        SoftAssert softAssert = new SoftAssert();
+        WebElement adultsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        adultsIncreaseButton.click();
+        //searching the AdultsDecrease Button and decreasing the number of Adults to 1
+        WebElement adultsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[2]")));
+        softAssert.assertTrue(adultsDecreaseButton.isDisplayed(),"Adults decrease button is not displayed.");
+        try{
+            adultsDecreaseButton.click();
+            WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String  currentAdultsNumber = adultsNumberLabel.getText();
+            softAssert.assertEquals(currentAdultsNumber, "1", "Adults number did not decrease correctly.");
+        } catch (Exception e){
+            System.out.println("Adults decrease button cannot be clicked.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void AdultsDecreaseNoLowerThanOne(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+        //searching the AdultsDecrease Button, checking if default number is 1 and that it cannot be decreased
+        //lower than 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement adultsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[2]")));
+        softAssert.assertTrue(adultsDecreaseButton.isDisplayed(),"Adults decrease button is not displayed.");
+
+        WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+        String  defaultAdultsNumber = adultsNumberLabel.getText();
+        softAssert.assertEquals(defaultAdultsNumber, "1", "Default adults number is not 1.");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        boolean isDisabled = (Boolean) js.executeScript("return arguments[0].hasAttribute('disabled');", adultsDecreaseButton);
+        if(!isDisabled){
+            adultsDecreaseButton.click();
+            WebElement adultsNumberLabel1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String  currentAdultsNumber1 = adultsNumberLabel1.getText();
+            softAssert.assertEquals(currentAdultsNumber1, "0","Adults number cannot be decreased lower than 1.");
+        } else{
+            System.out.println("Adults number cannot be decreased lower than 1.");
         }
         softAssert.assertAll();
     }
