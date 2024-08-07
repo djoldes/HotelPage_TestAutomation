@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 //--
 import org.openqa.selenium.chrome.ChromeDriver;
 //--
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 //--
 import org.testng.annotations.AfterMethod;
@@ -14,92 +15,154 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 //--
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 public class HomePage_MenuBar_TestNG {
     private WebDriver driver;
 
     @BeforeMethod
-    public void beforeClass() {
-        //System.setProperty("webdriver.chrome.driver", "path/to/chromedriver.exe");
+    public void beforeMethod() {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+        driver.get("https://ancabota09.wixsite.com/intern");
     }
 
     @AfterMethod
-    public void afterClass() {
+    public void afterMethod() {
         driver.quit();
     }
 
     @Test
     public void ExploreButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
-
         WebElement exploreButton = driver.findElement(By.id("i6kl732v1"));
 
-        // Click the button
+        String colorBeforeHover = exploreButton.getCssValue("color");
+        Actions actions = new Actions(driver);
+        actions.moveToElement(exploreButton).perform();
+
+        try{
+            Thread.sleep(5000);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        String colorAfterHover = exploreButton.getCssValue("color");
+
+        SoftAssert softAssert = new SoftAssert();
+
+        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
+
         exploreButton.click();
 
-        // Verify that the current URL contains the expected path for the explore page
         String expectedExplorePageUrl = "https://ancabota09.wixsite.com/intern/explore";
         String actualUrl = driver.getCurrentUrl();
-        Assert.assertTrue(actualUrl.contains(expectedExplorePageUrl), "Explore button did not redirect to the explore page.");
+        softAssert.assertTrue(actualUrl.contains(expectedExplorePageUrl), "Explore button did not redirect to the explore page.");
+
+        softAssert.assertAll();
 
     }
 
     @Test
     public void RoomsButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
-
         WebElement roomsLink = driver.findElement(By.id("i6kl732v2label"));
 
-        // Click the "Rooms" link
+        String colorBeforeHover = roomsLink.getCssValue("color");
+        Actions actions = new Actions(driver);
+        actions.moveToElement(roomsLink).perform();
+
+        try{
+            Thread.sleep(5000);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        String colorAfterHover = roomsLink.getCssValue("color");
+
+        SoftAssert softAssert = new SoftAssert();
+
+        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
+
         roomsLink.click();
 
-        // Verify that the current URL contains the expected path for the rooms page
-        String expectedRoomsPageUrl = "https://ancabota09.wixsite.com/intern/rooms"; // Adjust the URL as needed
+        String expectedRoomsPageUrl = "https://ancabota09.wixsite.com/intern/rooms";
         String actualUrl = driver.getCurrentUrl();
-        Assert.assertTrue(actualUrl.contains(expectedRoomsPageUrl), "Rooms link did not teleport us to the rooms page.");
+        softAssert.assertTrue(actualUrl.contains(expectedRoomsPageUrl), "Rooms link did not teleport us to the rooms page.");
+
+        softAssert.assertAll();
 
     }
 
     @Test
-    public void ContactButtonTest(){
+    public void ContactButtonTest() throws InterruptedException {
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement contactLink = driver.findElement(By.id("i6kl732v3"));
 
-        // Click the "Rooms" link
+        String colorBeforeHover = contactLink.getCssValue("color");
+        Actions actions = new Actions(driver);
+        actions.moveToElement(contactLink).perform();
+
+        try{
+            Thread.sleep(5000);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        String colorAfterHover = contactLink.getCssValue("color");
+
+        SoftAssert softAssert = new SoftAssert();
+
+        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
+
         contactLink.click();
 
-        // Verify that the current URL contains the expected path for the rooms page
-        String expectedContactPageUrl = "https://ancabota09.wixsite.com/intern/contact"; // Adjust the URL as needed
+        String expectedContactPageUrl = "https://ancabota09.wixsite.com/intern/contact";
         String actualUrl = driver.getCurrentUrl();
-        Assert.assertTrue(actualUrl.contains(expectedContactPageUrl), "Contact link did not teleport us to the contact page.");
+        softAssert.assertTrue(actualUrl.contains(expectedContactPageUrl), "Contact link did not teleport us to the contact page.");
+
+        softAssert.assertAll();
 
     }
 
     @Test
     public void BookNowButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement bookNowLink = driver.findElement(By.id("i6tj0u8x"));
 
-        // Click the "Rooms" link
+        String colorBeforeHover = bookNowLink.getCssValue("color");
+        Actions actions = new Actions(driver);
+        actions.moveToElement(bookNowLink).perform();
+
+        try{
+            Thread.sleep(5000);
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        String colorAfterHover = bookNowLink.getCssValue("color");
+
+        SoftAssert softAssert = new SoftAssert();
+
+        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
+
         bookNowLink.click();
 
-        // Verify that the current URL contains the expected path for the rooms page
-        String expectedBookNowPageUrl = "https://ancabota09.wixsite.com/intern/booknow"; // Adjust the URL as needed
+        String expectedBookNowPageUrl = "https://ancabota09.wixsite.com/intern/booknow";
         String actualUrl = driver.getCurrentUrl();
-        Assert.assertTrue(actualUrl.contains(expectedBookNowPageUrl), "BookNow link did not redirect you to the Book Now page.");
+        softAssert.assertTrue(actualUrl.contains(expectedBookNowPageUrl), "BookNow link did not redirect you to the Book Now page.");
+
+        softAssert.assertAll();
 
     }
 
     @Test
     public void HomeButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement homeLink = driver.findElement(By.id("i6kl732v0"));
 
         homeLink.click();
@@ -113,7 +176,6 @@ public class HomePage_MenuBar_TestNG {
     @Test
     public void LogoButtonTest(){
 
-        driver.get("https://ancabota09.wixsite.com/intern");
         WebElement logoLink = driver.findElement(By.id("i6ksxrtk"));
 
         logoLink.click();
