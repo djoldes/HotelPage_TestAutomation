@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 //--
 import org.openqa.selenium.chrome.ChromeDriver;
 //--
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 //--
 import org.testng.annotations.AfterMethod;
@@ -14,6 +16,10 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 //--
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+
+import java.time.Duration;
+import java.time.LocalDate;
 
 public class HomePage_FooterButtons_TestNG {
     private WebDriver driver;
@@ -147,5 +153,39 @@ public class HomePage_FooterButtons_TestNG {
         WebElement adressContent = driver.findElement(By.id("i71ww6nk"));
         Assert.assertEquals(adressContent.getText(), "info@mysite.com\n" + "Tel: 123-456-7890", "Text not correct!");
 
+    }
+
+    @Test
+    private void HomeAndAwaySection(){
+        SoftAssert softAssert = new SoftAssert();
+        WebElement title = driver.findElement(By.xpath("//*[@id=\"i6ktzy38\"]/p/span"));
+        softAssert.assertTrue(title.getText().contains("HOME & AWAY"), "Title is not correct!");
+        WebElement copyrights = driver.findElement(By.xpath("//*[@id=\"i71wwqnj\"]/p[1]"));
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        softAssert.assertTrue(copyrights.toString().contains(currentYear+"by HOME & AWAY"), "Coyrights info is not correct!");
+        WebElement creatorInfo = driver.findElement(By.xpath("//*[@id=\"i71wwqnj\"]/p[2]"));
+        softAssert.assertTrue(creatorInfo.toString().contains("Proudly created with"));
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void PaymentInfo() throws InterruptedException {
+        SoftAssert softAssert = new SoftAssert();
+        Thread.sleep(5000);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement title = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"i6lux50r_0\"]/p/span")));
+        softAssert.assertTrue(title.getText().contains("WE ACCEPT"), "Title of the Payment Block is not correct");
+        WebElement galerryGrid = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"i71uub1o\"]/div[1]")));
+        softAssert.assertTrue(galerryGrid.isDisplayed(), "Payment gallery is not displayed.");
+        WebElement americanExpressImage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"img_undefined\"]/img")));
+        softAssert.assertTrue(americanExpressImage.isDisplayed(),"American Express image not displayed.");
+        WebElement MasterCardImage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"img_undefined\"]/img")));
+        softAssert.assertTrue(MasterCardImage.isDisplayed(),"MasterCard image not displayed.");
+        WebElement PayPal = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"img_undefined\"]/img")));
+        softAssert.assertTrue(PayPal.isDisplayed(),"PayPal image not displayed.");
+        WebElement Visa = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"img_undefined\"]/img")));
+        softAssert.assertTrue(Visa.isDisplayed(),"Visa image not displayed.");
+        softAssert.assertAll();
     }
 }

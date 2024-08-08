@@ -419,6 +419,138 @@ public class Calendar_TestNG{
         }
         softAssert.assertAll();
     }
+
+    @Test
+    private void KidsIncreaseButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+
+        //searching the KidsIncrease Button and increasing the number of Kids to 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement kidsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[1]")));
+
+        softAssert.assertTrue(kidsIncreaseButton.isDisplayed(),"Adults increase button is not displayed.");
+        try{
+            kidsIncreaseButton.click();
+            WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+            String currentKidsNumber = kidsNumberLabel.getText();
+            softAssert.assertEquals(currentKidsNumber, "1", "Kids number did not increase correctly.");
+        } catch (Exception e){
+            System.out.println("Kids increase button cannot be clicked.");
+        }
+
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void KidsDecreaseButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+
+        //searching the KidsIncrease Button and increasing the number of Kids to 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement kidsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[1]")));
+        kidsIncreaseButton.click();
+        //searching the KidsDecrease Button and decreasing the number of Kids to 0
+        WebElement kidsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[2]")));
+        softAssert.assertTrue(kidsDecreaseButton.isDisplayed(),"Kids decrease button is not displayed.");
+        try{
+            kidsDecreaseButton.click();
+            WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+            String currentKidsNumber = kidsNumberLabel.getText();
+            softAssert.assertEquals(currentKidsNumber, "0", "Kids number did not decrease correctly.");
+        } catch (Exception e){
+            System.out.println("Kids decrease button cannot be clicked.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void KidsDecreasedNoLowerThanZero(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+        //searching the AdultsDecrease Button, checking if default number is 1 and that it cannot be decreased
+        //lower than 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement kidsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[2]")));
+        softAssert.assertTrue(kidsDecreaseButton.isDisplayed(),"Kids decrease button is not displayed.");
+
+        WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+        String defaultKidsNumber = kidsNumberLabel.getText();
+        softAssert.assertEquals(defaultKidsNumber, "0", "Default kids number is not 0.");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        boolean isDisabled = (Boolean) js.executeScript("return arguments[0].hasAttribute('disabled');", kidsDecreaseButton);
+        if(!isDisabled){
+            kidsDecreaseButton.click();
+            WebElement kidsNumberLabel1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String currentKidsNumber1 = kidsNumberLabel1.getText();
+            softAssert.assertEquals(currentKidsNumber1, "-1","Kids number cannot be decreased lower than 0.");
+        } else{
+            System.out.println("Kids number cannot be decreased lower than 0.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void SearchButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+        //finding the search button and click on it
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"search-widget\"]/form/ul/li[6]/button")));
+        searchButton.click();
+        driver.switchTo().defaultContent();
+        WebElement checkInCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        Assert.assertTrue(checkInCalendarFrame.isDisplayed(), "CheckIn Calendar frame is not displayed when click on the search button without any data.");
+    }
+
+    @Test
+    private void PerformSearch() throws InterruptedException {
+        //open check in calendar
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(mainFrame);
+        WebElement CheckInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
+        CheckInCalendarButton.click();
+        driver.switchTo().defaultContent();
+        WebElement checkInCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        driver.switchTo().frame(checkInCalendarFrame);
+
+        //performing the selection of today as checkin date
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+        String formattedCheckInDate = today.format(formatter);
+        String checkInDatePath = String.format("//button[@aria-label='%s']", formattedCheckInDate);
+        WebElement checkInDateButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(checkInDatePath)));
+        checkInDateButton.click();
+        driver.switchTo().defaultContent();
+
+        //performing the selection of a future date as checkout date
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(checkOutCalendarFrame);
+        LocalDate futureDate = today.plusDays(10);
+        String formattedCheckOutDate = futureDate.format(formatter);
+        String checkOutDatePath = String.format("//button[@aria-label='%s']", formattedCheckOutDate);
+        Thread.sleep(2000);
+        WebElement checkOutDateButton = driver.findElement(By.xpath(checkOutDatePath));
+        checkOutDateButton.click();
+
+        //click on the search button and validate that you're redirected to the rooms page
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(mainFrame);
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"search-widget\"]/form/ul/li[6]/button")));
+        searchButton.click();
+        String expectedUrlPart = "https://ancabota09.wixsite.com/intern/rooms";
+        String actualUrl = driver.getCurrentUrl();
+        Assert.assertTrue(actualUrl.contains(expectedUrlPart));
+    }
 }
 
 
