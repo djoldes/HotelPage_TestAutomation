@@ -30,7 +30,6 @@ public class LiveChat_TestNG {
 
     @BeforeMethod
     public void BeforeMethod() {
-        //System.setProperty("webdriver.chrome.driver", "path/to/chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get("https://ancabota09.wixsite.com/intern");
@@ -221,5 +220,28 @@ public class LiveChat_TestNG {
         //validate that the button exist
         WebElement attachementButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div/div/div[2]/div/div[2]/div/div[2]/div[2]/div/button[2]")));
         Assert.assertTrue(attachementButton.isDisplayed());
+    }
+
+    @Test
+    private void CloseChatButton(){
+        //open the live chat and switching to the lice chat frame
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement liveChatMinimizedFrame = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"comp-jr4sqg2g\"]/iframe")));
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(liveChatMinimizedFrame);
+        WebElement liveChatButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@data-hook='minimized-chat']")));
+        liveChatButton.click();
+        driver.switchTo().defaultContent();
+        WebElement liveChatFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"comp-jr4sqg2g\"]/iframe")));
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(liveChatFrame);
+        //validate and click on the close button
+        SoftAssert softAssert = new SoftAssert();
+        WebElement closeButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div/div[2]/div/div[1]/div/button")));
+        softAssert.assertTrue(closeButton.isDisplayed());
+        closeButton.click();
+        driver.switchTo().defaultContent();
+        softAssert.assertTrue(liveChatMinimizedFrame.isDisplayed());
+        softAssert.assertAll();
     }
 }
