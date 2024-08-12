@@ -34,7 +34,7 @@ public class HomePage_MenuBar_TestNG {
 
     @Test
     public void ExploreButtonTest(){
-
+        SoftAssert softAssert = new SoftAssert();
         WebElement exploreButton = driver.findElement(By.id("i6kl732v1"));
 
         String colorBeforeHover = exploreButton.getCssValue("color");
@@ -43,17 +43,12 @@ public class HomePage_MenuBar_TestNG {
 
         try{
             Thread.sleep(5000);
+            String colorAfterHover = exploreButton.getCssValue("color");
+            softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
         }
         catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        String colorAfterHover = exploreButton.getCssValue("color");
-
-        SoftAssert softAssert = new SoftAssert();
-
-        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
-
         exploreButton.click();
 
         String expectedExplorePageUrl = "https://ancabota09.wixsite.com/intern/explore";
@@ -66,7 +61,7 @@ public class HomePage_MenuBar_TestNG {
 
     @Test
     public void RoomsButtonTest(){
-
+        SoftAssert softAssert = new SoftAssert();
         WebElement roomsLink = driver.findElement(By.id("i6kl732v2label"));
 
         String colorBeforeHover = roomsLink.getCssValue("color");
@@ -75,16 +70,12 @@ public class HomePage_MenuBar_TestNG {
 
         try{
             Thread.sleep(5000);
+            String colorAfterHover = roomsLink.getCssValue("color");
+            softAssert.assertNotEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
         }
         catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        String colorAfterHover = roomsLink.getCssValue("color");
-
-        SoftAssert softAssert = new SoftAssert();
-
-        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
 
         roomsLink.click();
 
@@ -100,24 +91,19 @@ public class HomePage_MenuBar_TestNG {
     public void ContactButtonTest() throws InterruptedException {
 
         WebElement contactLink = driver.findElement(By.id("i6kl732v3"));
-
+        SoftAssert softAssert = new SoftAssert();
         String colorBeforeHover = contactLink.getCssValue("color");
         Actions actions = new Actions(driver);
         actions.moveToElement(contactLink).perform();
 
         try{
             Thread.sleep(5000);
+            String colorAfterHover = contactLink.getCssValue("color");
+            softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
         }
         catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        String colorAfterHover = contactLink.getCssValue("color");
-
-        SoftAssert softAssert = new SoftAssert();
-
-        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
-
         contactLink.click();
 
         String expectedContactPageUrl = "https://ancabota09.wixsite.com/intern/contact";
@@ -130,7 +116,7 @@ public class HomePage_MenuBar_TestNG {
 
     @Test
     public void BookNowButtonTest(){
-
+        SoftAssert softAssert = new SoftAssert();
         WebElement bookNowLink = driver.findElement(By.id("i6tj0u8x"));
 
         String colorBeforeHover = bookNowLink.getCssValue("color");
@@ -139,16 +125,12 @@ public class HomePage_MenuBar_TestNG {
 
         try{
             Thread.sleep(5000);
+            String colorAfterHover = bookNowLink.getCssValue("color");
+            softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
         }
         catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        String colorAfterHover = bookNowLink.getCssValue("color");
-
-        SoftAssert softAssert = new SoftAssert();
-
-        softAssert.assertEquals(colorBeforeHover, colorAfterHover, "The color did not change on hover");
 
         bookNowLink.click();
 

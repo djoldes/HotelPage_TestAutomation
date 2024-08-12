@@ -115,22 +115,65 @@ public class ExplorePage_TestNG {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         JavascriptExecutor js = (JavascriptExecutor) driver;
         GoToTheExplorePage();
+        //Search section and validate its existence
+        WebElement titleSectionCT = driver.findElement(By.xpath("//*[@id=\"i6kv3ge8\"]/p[1]"));
+        String tSCTToText = titleSectionCT.getText();
+        softAssert.assertEquals(tSCTToText, "Chinatown", "Title of the section is not correct.");
         //search Chinatown image and check if correct
         WebElement chinatownImage = driver.findElement(By.xpath("//*[@id=\"img_i6kv4ak9\"]/img"));
         js.executeScript("arguments[0].scrollIntoView();", chinatownImage);
         String cTIToText = chinatownImage.getAttribute("src").toString();
         softAssert.assertTrue(cTIToText.contains("9c608a_14eb60e42d3a42f29fe67d9b579e26de.jpg"), "Chinatown image is not correct.");
+        //search info paragraph and check if correct
+        WebElement infoCT = driver.findElement(By.xpath("//*[@id=\"i6kv3ge8\"]/p[4]"));
+        String infoCTToText = infoCT.getText();
+        softAssert.assertTrue(infoCTToText.contains("Chinatown"), "Info text is not correct.");
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void HaightAndAshburySection(){
+        //go to the explore page
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        GoToTheExplorePage();
+        //Search section and validate its existence
+        WebElement titleSectionHA = driver.findElement(By.xpath("//*[@id=\"i6kvbhmb\"]/p[1]"));
+        String tSCTToText = titleSectionHA.getText();
+        softAssert.assertEquals(tSCTToText, "Haight & Ashbury", "Title of the section is not correct.");
         //search Haight&Ashbury image and check if correct
         WebElement haightAndAshburyImage = driver.findElement(By.xpath("//*[@id=\"img_i6kvbhmc\"]/img"));
         js.executeScript("arguments[0].scrollIntoView();", haightAndAshburyImage);
         String hAAIToText = haightAndAshburyImage.getAttribute("src").toString();
         softAssert.assertTrue(hAAIToText.contains("9c608a_569e962c58334d07a4048e125af8fb82.jpg"), "Haight&Ashbury image is not correct.");
+        //search info paragraph and check if correct
+        WebElement infoHA = driver.findElement(By.xpath("//*[@id=\"i6kvbhmb\"]/p[4]"));
+        String infoHAToText = infoHA.getText();
+        softAssert.assertTrue(infoHAToText.contains("Haight"), "Info text is not correct.");
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void GoldenGateBridgeSection(){
+        //go to the explore page
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        GoToTheExplorePage();
+        //Search section and validate its existence
+        WebElement titleSectionGGB = driver.findElement(By.xpath("//*[@id=\"i6kvbkw0\"]/p[1]"));
+        String tSCTToText = titleSectionGGB.getText();
+        softAssert.assertEquals(tSCTToText, "Golden Gate Bridge", "Title of the section is not correct.");
         //search GoldenGateBridge image and check if correct
         WebElement goldenGateBridgeImage = driver.findElement(By.xpath("//*[@id=\"img_i6kvbkw0_0\"]/img"));
         js.executeScript("arguments[0].scrollIntoView();", goldenGateBridgeImage);
         String gGBIToText = goldenGateBridgeImage.getAttribute("src").toString();
         softAssert.assertTrue(gGBIToText.contains("9c608a_66f0495affeb412ba01b0d9f0bd3dd6b.jpg"), "Golden Gate Bridge image is not correct.");
-
+        //search info paragraph and check if correct
+        WebElement infoGGB = driver.findElement(By.xpath("//*[@id=\"i6kvbkw0\"]/p[4]"));
+        String infoGGBToText = infoGGB.getText();
+        softAssert.assertTrue(infoGGBToText.contains("Golden Gate Bridge"), "Info text is not correct.");
         softAssert.assertAll();
     }
 }

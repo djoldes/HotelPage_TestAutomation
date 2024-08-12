@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 //--
 //--
+import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -31,7 +32,6 @@ public class Calendar_TestNG{
 
     @BeforeMethod
     public void BeforeMethod() {
-        //System.setProperty("webdriver.chrome.driver", "path/to/chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get("https://ancabota09.wixsite.com/intern");
@@ -252,24 +252,24 @@ public class Calendar_TestNG{
         boolean checkOutCalendarDisplayed= checkOutCalendarFrame.isDisplayed();
         softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
 
-        //select tommorrow as a checkout date
+        //select tomorrow as a checkout date
         driver.switchTo().defaultContent();
         driver.switchTo().frame(checkOutCalendarFrame);
-        LocalDate tommorrow = today.plusDays(1);
+        LocalDate tomorrow = today.plusDays(1);
 
-        String formattedCheckOutDate = tommorrow.format(formatter);
+        String formattedCheckOutDate = tomorrow.format(formatter);
         String checkOutDatePath = String.format("//button[@aria-label='%s']", formattedCheckOutDate);
         Thread.sleep(2000);
         WebElement checkOutDateButton = driver.findElement(By.xpath(checkOutDatePath));
-        // Check if possible to select tommorrow as a checkout date
+        // Check if possible to select tomorrow as a checkout date
         try{
             checkOutDateButton.isEnabled();
             checkOutDateButton.click();
             driver.switchTo().defaultContent();
             driver.switchTo().frame(mainFrame);
             WebElement checkOutDateSelected = driver.findElement(By.id("check-out-value"));
-            String expectedDate = tommorrow.format(DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH));
-            softAssert.assertEquals(checkOutDateSelected.getText(), expectedDate, "Cannot select "+tommorrow+" as a checkout date!");
+            String expectedDate = tomorrow.format(DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH));
+            softAssert.assertEquals(checkOutDateSelected.getText(), expectedDate, "Cannot select "+tomorrow+" as a checkout date!");
         }catch (Exception e){
             softAssert.assertTrue(checkOutDateButton.isEnabled(), "Cannot select tommorow as a check-out date.");
         }
@@ -514,9 +514,15 @@ public class Calendar_TestNG{
     @Test
     private void PerformSearch() throws InterruptedException {
         //open check in calendar
+        SoftAssert softAssert = new SoftAssert();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
         driver.switchTo().frame(mainFrame);
+        //get the adults and kids number
+        WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+        String  currentAdultsNumber = adultsNumberLabel.getText();
+        WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+        String currentKidsNumber = kidsNumberLabel.getText();
         WebElement CheckInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
         CheckInCalendarButton.click();
         driver.switchTo().defaultContent();
@@ -542,6 +548,8 @@ public class Calendar_TestNG{
         WebElement checkOutDateButton = driver.findElement(By.xpath(checkOutDatePath));
         checkOutDateButton.click();
 
+
+
         //click on the search button and validate that you're redirected to the rooms page
         driver.switchTo().defaultContent();
         driver.switchTo().frame(mainFrame);
@@ -549,7 +557,39 @@ public class Calendar_TestNG{
         searchButton.click();
         String expectedUrlPart = "https://ancabota09.wixsite.com/intern/rooms";
         String actualUrl = driver.getCurrentUrl();
-        Assert.assertTrue(actualUrl.contains(expectedUrlPart));
+        softAssert.assertTrue(actualUrl.contains(expectedUrlPart));
+        driver.switchTo().defaultContent();
+
+        //validate that the rooms button color changed to white
+        WebElement roomsLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6kl732v2label\"]")));
+        Color roomsColor = Color.fromString(roomsLink.getCssValue("color"));
+        Color expectedColor = Color.fromString("#FFFFFF");
+        softAssert.assertTrue(roomsColor.equals(expectedColor), "The color of Rooms menu button did not change when redirected to the Rooms page.");
+
+        //validate that the form in the rooms page is completed after the search
+        driver.switchTo().defaultContent();
+        WebElement roomsFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(roomsFrame);
+        //check-in date
+        WebElement checkInRoomsDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_in-value\"]")));
+        String cIRD = checkInRoomsDate.getText();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+        softAssert.assertEquals(cIRD, today.format(timeFormatter), "Check In date did not match.");
+        //check-out date
+        WebElement checkOutRoomsDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_out-value\"]")));
+        String cORD = checkOutRoomsDate.getText();
+        softAssert.assertEquals(cORD, futureDate.format(timeFormatter), "Check Out date did not match.");
+        //Adults number
+        WebElement adultsNumberRooms = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]")));
+        String adultsNRText = adultsNumberRooms.getAttribute("aria-valuenow");
+        softAssert.assertEquals(adultsNRText, currentAdultsNumber,"Adults number did not match.");
+        //Kids number
+        WebElement kidsNumberRooms = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]")));
+        String kidsNRText = kidsNumberRooms.getAttribute("aria-valuenow");
+        softAssert.assertEquals(kidsNRText, currentKidsNumber,"Kids number did not match.");
+
+        softAssert.assertAll();
     }
 }
 
