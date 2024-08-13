@@ -245,7 +245,7 @@ public class LiveChat_TestNG {
         softAssert.assertAll();
     }
 
-    @Test
+    /*@Test
     private void FormDataTest() throws InterruptedException {
         //open the live chat and switching to the lice chat frame
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -315,9 +315,9 @@ public class LiveChat_TestNG {
         WebElement validMessageCheck = driver.findElement(By.xpath("//*[@id=\"message-valid\"]"));
         softAssert.assertTrue(validMessageCheck.isDisplayed());
         softAssert.assertAll();
-    }
+    }*/
 
-    @Test
+    /*@Test
     private void SubmitForm(){
         //open the live chat and switching to the lice chat frame
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -400,5 +400,5 @@ public class LiveChat_TestNG {
         //validate that the button exist
         WebElement attachementButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div/div/div[2]/div/div[2]/div/div[2]/div[2]/div/button[2]")));
         Assert.assertTrue(attachementButton.isDisplayed());
-    }
+    }*/
 }

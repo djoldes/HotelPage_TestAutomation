@@ -2,6 +2,7 @@
 //--
 //import javafx.scene.web.WebEngine;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 //--
 //--
@@ -21,9 +22,13 @@ import org.testng.asserts.SoftAssert;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class RoomsPage_TestNG {
     private WebDriver driver;
@@ -176,22 +181,642 @@ public class RoomsPage_TestNG {
         softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
 
         //performing the selection of tomorrow as a checkout date
-        // Găsirea calendarului activ (fără atributul hidden)
+        // finding the active calendar
         WebElement activeCalendar = driver.findElement(By.xpath("//div[contains(@class, 'calendar-popup') and not(@hidden)]"));
         LocalDate tomorrow = today.plusDays(1);
 
         String formattedCheckOutDate = tomorrow.format(formatter);
         WebElement checkOutDatePath = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate)));
         Thread.sleep(2000);
-        //WebElement checkOutDateButton = driver.findElement(By.xpath(checkOutDatePath));
         String isDisabled = checkOutDatePath.getAttribute("disabled");
         if(isDisabled == "false"){
             checkOutDatePath.click();
         }else{
-            System.out.println("Cannot select tomorrow as a checkout date.");
+            softAssert.assertEquals(isDisabled, "false", "Cannot select tomorrow as a check out date.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void CheckOutFutureDate() throws InterruptedException {
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+
+        WebElement checkInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
+        checkInCalendarButton.click();
+
+        //performing the selection of today
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+
+        String formattedDate1 = today.format(formatter);
+        String datesButton = String.format("//button[@aria-label='%s']", formattedDate1);
+
+        WebElement dateButtonCheckIn1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(datesButton)));
+        dateButtonCheckIn1.click();
+
+        //check if the checkout calendar is opened automatically
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]")));
+        boolean checkOutCalendarDisplayed= checkOutCalendarFrame.isDisplayed();
+        softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
+
+        //performing the selection of tomorrow as a checkout date
+        // finding the active calendar
+        WebElement activeCalendar = driver.findElement(By.xpath("//div[contains(@class, 'calendar-popup') and not(@hidden)]"));
+        LocalDate futureDate = today.plusDays(10);
+
+        String formattedCheckOutDate = futureDate.format(formatter);
+        WebElement checkOutDatePath = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate)));
+        Thread.sleep(2000);
+        String isDisabled = checkOutDatePath.getCssValue("disabled");
+        System.out.println(isDisabled);
+        if(Objects.equals(isDisabled, "")){
+            checkOutDatePath.click();
+            WebElement checkOutDateLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_out-value\"]")));
+            String cODLText = checkOutDateLabel.getText();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+            Assert.assertEquals(cODLText, futureDate.format(timeFormatter), "Check Out date did not match.");
+        }else{
+            softAssert.assertEquals(isDisabled, "false", "Cannot select tomorrow as a check out date.");
         }
         softAssert.assertAll();
 
+    }
 
+    @Test
+    private void CheckOutPastDate() throws InterruptedException {
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+
+        WebElement checkInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
+        checkInCalendarButton.click();
+
+        //performing the selection of today
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+
+        String formattedDate1 = today.format(formatter);
+        String datesButton = String.format("//button[@aria-label='%s']", formattedDate1);
+
+        WebElement dateButtonCheckIn1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(datesButton)));
+        dateButtonCheckIn1.click();
+
+        //check if the checkout calendar is opened automatically
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]")));
+        boolean checkOutCalendarDisplayed= checkOutCalendarFrame.isDisplayed();
+        softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
+
+        //performing the selection of tomorrow as a checkout date
+        // finding the active calendar
+        WebElement activeCalendar = driver.findElement(By.xpath("//div[contains(@class, 'calendar-popup') and not(@hidden)]"));
+        LocalDate pastDate = today.minusDays(2);
+
+        String formattedCheckOutDate = pastDate.format(formatter);
+        WebElement checkOutDatePath = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate)));
+        Thread.sleep(2000);
+        String isDisabled = checkOutDatePath.getAttribute("disabled");
+        if(isDisabled == "false"){
+            checkOutDatePath.click();
+        }else{
+            softAssert.assertEquals(isDisabled, "false", "Cannot select a past date as a check out date.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void PrevoiusMonthCheckOutCalendar(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+
+        WebElement checkOutCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]")));
+        checkOutCalendarButton.click();
+
+        //obtaining and comparing the months names
+        WebElement previousMonthButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]/div/nav/button[1]")));
+        previousMonthButton.click();
+        WebElement actualMonthLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]/div/div[1]")));
+        String actualMonthName = actualMonthLabel.getText();
+        String previousMonthName = today.minusMonths(1).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        Assert.assertTrue(actualMonthName.contains(previousMonthName), "Previous Month is not displayed correctly.");
+    }
+
+    @Test
+    private void NextMonthCheckOutCalendar(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+
+        WebElement checkOutCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]")));
+        checkOutCalendarButton.click();
+
+        //obtaining and comparing the months names
+        WebElement nextMonthButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]/div/nav/button[2]")));
+        nextMonthButton.click();
+        WebElement actualMonthLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]/div/div[1]")));
+        String actualMonthName = actualMonthLabel.getText();
+        String nextMonthName = today.plusMonths(1).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        Assert.assertTrue(actualMonthName.contains(nextMonthName), "Next Month date is not displayed correctly.");
+    }
+
+    @Test
+    private void AdultsNumberIncrease(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+
+        //searching the AdultsIncrease Button and increasing the number of Adults to 2
+        SoftAssert softAssert = new SoftAssert();
+        WebElement adultsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        softAssert.assertTrue(adultsIncreaseButton.isDisplayed(),"Adults increase button is not displayed.");
+        try{
+            adultsIncreaseButton.click();
+            WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String  currentAdultsNumber = adultsNumberLabel.getText();
+            softAssert.assertEquals(currentAdultsNumber, "2", "Adults number did not increase correctly.");
+        } catch (Exception e){
+            System.out.println("Adults increase button cannot be clicked.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void AdultsDecreaseNoLowerThanOne(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        //searching the AdultsDecrease Button, checking if default number is 1 and that it cannot be decreased
+        //lower than 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement adultsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[2]")));
+        softAssert.assertTrue(adultsDecreaseButton.isDisplayed(),"Adults decrease button is not displayed.");
+
+        WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+        String  defaultAdultsNumber = adultsNumberLabel.getText();
+        softAssert.assertEquals(defaultAdultsNumber, "1", "Default adults number is not 1.");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        boolean isDisabled = (Boolean) js.executeScript("return arguments[0].hasAttribute('disabled');", adultsDecreaseButton);
+        if(!isDisabled){
+            adultsDecreaseButton.click();
+            WebElement adultsNumberLabel1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String  currentAdultsNumber1 = adultsNumberLabel1.getText();
+            softAssert.assertEquals(currentAdultsNumber1, "0","Adults number cannot be decreased lower than 1.");
+        } else{
+            System.out.println("Adults number cannot be decreased lower than 1.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void AdultsDecreaseButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        //searching the AdultsIncrease Button and increasing the number of Adults to 2
+        SoftAssert softAssert = new SoftAssert();
+        WebElement adultsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        adultsIncreaseButton.click();
+        //searching the AdultsDecrease Button and decreasing the number of Adults to 1
+        WebElement adultsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[2]")));
+        softAssert.assertTrue(adultsDecreaseButton.isDisplayed(),"Adults decrease button is not displayed.");
+        try{
+            adultsDecreaseButton.click();
+            WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String  currentAdultsNumber = adultsNumberLabel.getText();
+            softAssert.assertEquals(currentAdultsNumber, "1", "Adults number did not decrease correctly.");
+        } catch (Exception e){
+            System.out.println("Adults decrease button cannot be clicked.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void KidsIncreaseButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        //searching the KidsIncrease Button and increasing the number of Kids to 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement kidsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[1]")));
+
+        softAssert.assertTrue(kidsIncreaseButton.isDisplayed(),"Adults increase button is not displayed.");
+        try{
+            kidsIncreaseButton.click();
+            WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+            String currentKidsNumber = kidsNumberLabel.getText();
+            softAssert.assertEquals(currentKidsNumber, "1", "Kids number did not increase correctly.");
+        } catch (Exception e){
+            System.out.println("Kids increase button cannot be clicked.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void KidsDecreaseButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        //searching the KidsIncrease Button and increasing the number of Kids to 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement kidsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[1]")));
+        kidsIncreaseButton.click();
+        //searching the KidsDecrease Button and decreasing the number of Kids to 0
+        WebElement kidsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[2]")));
+        softAssert.assertTrue(kidsDecreaseButton.isDisplayed(),"Kids decrease button is not displayed.");
+        try{
+            kidsDecreaseButton.click();
+            WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+            String currentKidsNumber = kidsNumberLabel.getText();
+            softAssert.assertEquals(currentKidsNumber, "0", "Kids number did not decrease correctly.");
+        } catch (Exception e){
+            System.out.println("Kids decrease button cannot be clicked.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void KidsDecreasedNoLowerThanZero(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        //searching the AdultsDecrease Button, checking if default number is 1 and that it cannot be decreased
+        //lower than 1
+        SoftAssert softAssert = new SoftAssert();
+        WebElement kidsDecreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[2]")));
+        softAssert.assertTrue(kidsDecreaseButton.isDisplayed(),"Kids decrease button is not displayed.");
+
+        WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+        String defaultKidsNumber = kidsNumberLabel.getText();
+        softAssert.assertEquals(defaultKidsNumber, "0", "Default kids number is not 0.");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        boolean isDisabled = (Boolean) js.executeScript("return arguments[0].hasAttribute('disabled');", kidsDecreaseButton);
+        if(!isDisabled){
+            kidsDecreaseButton.click();
+            WebElement kidsNumberLabel1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String currentKidsNumber1 = kidsNumberLabel1.getText();
+            softAssert.assertEquals(currentKidsNumber1, "-1","Kids number cannot be decreased lower than 0.");
+        } else{
+            System.out.println("Kids number cannot be decreased lower than 0.");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void SearchButton(){
+        //finding the main frame and switching to it
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        //finding the search button and click on it
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[5]/button")));
+        searchButton.click();
+        WebElement checkInCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[1]/div[2]")));
+        Assert.assertTrue(checkInCalendarFrame.isDisplayed(), "CheckIn Calendar frame is not displayed when click on the search button without any data.");
+    }
+
+    @Test
+    private void SearchMoreAdults() throws InterruptedException {
+        //finding the main frame and switching to it
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        WebElement checkInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
+        checkInCalendarButton.click();
+
+        //performing the selection of today
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+
+        String formattedDate1 = today.format(formatter);
+        String datesButton = String.format("//button[@aria-label='%s']", formattedDate1);
+
+        WebElement dateButtonCheckIn1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(datesButton)));
+        dateButtonCheckIn1.click();
+
+        //check if the checkout calendar is opened automatically
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]")));
+        boolean checkOutCalendarDisplayed= checkOutCalendarFrame.isDisplayed();
+        softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
+
+        //performing the selection of tomorrow as a checkout date
+        // finding the active calendar
+        WebElement activeCalendar = driver.findElement(By.xpath("//div[contains(@class, 'calendar-popup') and not(@hidden)]"));
+        LocalDate futureDate = today.plusDays(10);
+
+        String formattedCheckOutDate = futureDate.format(formatter);
+        WebElement checkOutDatePath = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate)));
+        Thread.sleep(2000);
+        String isDisabled = checkOutDatePath.getCssValue("disabled");
+        System.out.println(isDisabled);
+        if(Objects.equals(isDisabled, "")) {
+            checkOutDatePath.click();
+            WebElement checkOutDateLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_out-value\"]")));
+            String cODLText = checkOutDateLabel.getText();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+            Assert.assertEquals(cODLText, futureDate.format(timeFormatter), "Check Out date did not match.");
+        }else{
+            softAssert.assertEquals(isDisabled, "false", "Cannot select tomorrow as a check out date.");
+        }
+        //increase the adults number
+        WebElement adultsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        softAssert.assertTrue(adultsIncreaseButton.isDisplayed(),"Adults increase button is not displayed.");
+        try{
+            adultsIncreaseButton.click();
+            WebElement adultsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+            String  currentAdultsNumber = adultsNumberLabel.getText();
+            softAssert.assertEquals(currentAdultsNumber, "2", "Adults number did not increase correctly.");
+        } catch (Exception e){
+            System.out.println("Adults increase button cannot be clicked.");
+        }
+        //finding the search button and click on it
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[5]/button")));
+        searchButton.click();
+        //validate the results
+        WebElement availableRoomsTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/div/div[1]/h2/span")));
+        String aRTToText = availableRoomsTitle.getText();
+        softAssert.assertEquals(aRTToText, "Results for:");
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM");
+        String monthText = futureDate.format(monthFormatter);
+        DateTimeFormatter daysFormatter = DateTimeFormatter.ofPattern("dd");
+        String checkInDay = today.format(daysFormatter);
+        String checkOutDay = futureDate.format(daysFormatter);
+        int year = today.getYear();
+        softAssert.assertEquals(aRTToText + monthText + checkInDay + "-" + checkOutDay + "," + year,
+                "Results for:" + monthText + checkInDay + "-" + checkOutDay + "," + year, "The search is correct.");
+
+        WebElement list = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("list")));
+        // Retrieve the list items
+        List<WebElement> listItems = list.findElements(By.tagName("li"));
+        softAssert.assertFalse(listItems.isEmpty(), "No results displayed.");
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void SearchMoreKids() throws InterruptedException {
+        //finding the main frame and switching to it
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        WebElement checkInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
+        checkInCalendarButton.click();
+
+        //performing the selection of today
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+
+        String formattedDate1 = today.format(formatter);
+        String datesButton = String.format("//button[@aria-label='%s']", formattedDate1);
+
+        WebElement dateButtonCheckIn1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(datesButton)));
+        dateButtonCheckIn1.click();
+
+        //check if the checkout calendar is opened automatically
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]")));
+        boolean checkOutCalendarDisplayed= checkOutCalendarFrame.isDisplayed();
+        softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
+
+        //performing the selection of tomorrow as a checkout date
+        // finding the active calendar
+        WebElement activeCalendar = driver.findElement(By.xpath("//div[contains(@class, 'calendar-popup') and not(@hidden)]"));
+        LocalDate futureDate = today.plusDays(10);
+
+        String formattedCheckOutDate = futureDate.format(formatter);
+        WebElement checkOutDatePath = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate)));
+        Thread.sleep(2000);
+        String isDisabled = checkOutDatePath.getCssValue("disabled");
+        System.out.println(isDisabled);
+        if(Objects.equals(isDisabled, "")) {
+            checkOutDatePath.click();
+            WebElement checkOutDateLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_out-value\"]")));
+            String cODLText = checkOutDateLabel.getText();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+            Assert.assertEquals(cODLText, futureDate.format(timeFormatter), "Check Out date did not match.");
+        }else{
+            softAssert.assertEquals(isDisabled, "false", "Cannot select tomorrow as a check out date.");
+        }
+        //searching the KidsIncrease Button and increasing the number of Kids to 1
+        WebElement kidsIncreaseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"children\"]/a[1]")));
+
+        softAssert.assertTrue(kidsIncreaseButton.isDisplayed(),"Adults increase button is not displayed.");
+        try{
+            kidsIncreaseButton.click();
+            WebElement kidsNumberLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+            String currentKidsNumber = kidsNumberLabel.getText();
+            softAssert.assertEquals(currentKidsNumber, "1", "Kids number did not increase correctly.");
+        } catch (Exception e){
+            System.out.println("Kids increase button cannot be clicked.");
+        }
+        //finding the search button and click on it
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[5]/button")));
+        searchButton.click();
+        //validate the results
+        WebElement availableRoomsTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/div/div[1]/h2/span")));
+        String aRTToText = availableRoomsTitle.getText();
+        softAssert.assertEquals(aRTToText, "Results for:");
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM");
+        String monthText = futureDate.format(monthFormatter);
+        DateTimeFormatter daysFormatter = DateTimeFormatter.ofPattern("dd");
+        String checkInDay = today.format(daysFormatter);
+        String checkOutDay = futureDate.format(daysFormatter);
+        int year = today.getYear();
+        softAssert.assertEquals(aRTToText + monthText + checkInDay + "-" + checkOutDay + "," + year,
+                "Results for:" + monthText + checkInDay + "-" + checkOutDay + "," + year, "The search is correct.");
+
+        try{
+            WebElement list = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("list")));
+            // Retrieve the list items
+            List<WebElement> listItems = list.findElements(By.tagName("li"));
+            softAssert.assertFalse(listItems.isEmpty(), "No results displayed.");
+        } catch (Exception e){
+            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/div/div[2]/div/p/span")));
+            String errorMessageText = errorMessage.getText();
+            softAssert.assertTrue(errorMessageText.contains("We can’t seem to find what you’re looking for. Try another search."), "Error message not displayed!");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void SearchAgain() throws InterruptedException {
+        //finding the main frame and switching to it
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        WebElement checkInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
+        checkInCalendarButton.click();
+
+        //performing the selection of today
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+
+        String formattedDate1 = today.format(formatter);
+        String datesButton = String.format("//button[@aria-label='%s']", formattedDate1);
+
+        WebElement dateButtonCheckIn1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(datesButton)));
+        dateButtonCheckIn1.click();
+
+        //check if the checkout calendar is opened automatically
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]")));
+        boolean checkOutCalendarDisplayed= checkOutCalendarFrame.isDisplayed();
+        softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
+
+        //performing the selection of tomorrow as a checkout date
+        // finding the active calendar
+        WebElement activeCalendar = driver.findElement(By.xpath("//div[contains(@class, 'calendar-popup') and not(@hidden)]"));
+        LocalDate futureDate = today.plusDays(10);
+
+        String formattedCheckOutDate = futureDate.format(formatter);
+        WebElement checkOutDatePath = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate)));
+        Thread.sleep(2000);
+        String isDisabled = checkOutDatePath.getCssValue("disabled");
+        System.out.println(isDisabled);
+        if(Objects.equals(isDisabled, "")) {
+            checkOutDatePath.click();
+            WebElement checkOutDateLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_out-value\"]")));
+            String cODLText = checkOutDateLabel.getText();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+            Assert.assertEquals(cODLText, futureDate.format(timeFormatter), "Check Out date did not match.");
+        }else{
+            softAssert.assertEquals(isDisabled, "false", "Cannot select" + futureDate + " as a check out date.");
+        }
+        //finding the search button and click on it
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[5]/button")));
+        searchButton.click();
+        WebElement searchAgain = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[5]/button")));
+        WebElement checkOutCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]")));
+        checkOutCalendarButton.click();
+        LocalDate newCheckOutDate = today.plusDays(5);
+
+        String formattedCheckOutDate2 = newCheckOutDate.format(formatter);
+        WebElement checkOutDatePath2 = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate2)));
+        Thread.sleep(2000);
+        String isDisabled2 = checkOutDatePath2.getCssValue("disabled");
+        System.out.println(isDisabled2);
+        if(Objects.equals(isDisabled2, "")) {
+            checkOutDatePath2.click();
+            WebElement checkOutDateLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_out-value\"]")));
+            String cODLText = checkOutDateLabel.getText();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+            Assert.assertEquals(cODLText, newCheckOutDate.format(timeFormatter), "Check Out date did not match.");
+        }else{
+            softAssert.assertEquals(isDisabled, "false", "Cannot select the" + newCheckOutDate + " as a check out date.");
+        }
+        searchAgain.click();
+        //validate the results
+        WebElement availableRoomsTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/div/div[1]/h2/span")));
+        String aRTToText = availableRoomsTitle.getText();
+        softAssert.assertEquals(aRTToText, "Results for:");
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM");
+        String monthText = newCheckOutDate.format(monthFormatter);
+        DateTimeFormatter daysFormatter = DateTimeFormatter.ofPattern("dd");
+        String checkInDay = today.format(daysFormatter);
+        String checkOutDay = newCheckOutDate.format(daysFormatter);
+        int year = today.getYear();
+        softAssert.assertEquals(aRTToText + monthText + checkInDay + "-" + checkOutDay + "," + year,
+                "Results for:" + monthText + checkInDay + "-" + checkOutDay + "," + year, "The search is not correct.");
+
+        try{
+            WebElement list = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("list")));
+            // Retrieve the list items
+            List<WebElement> listItems = list.findElements(By.tagName("li"));
+            softAssert.assertFalse(listItems.isEmpty(), "No results displayed.");
+        } catch (Exception e){
+            WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/div/div[2]/div/p/span")));
+            String errorMessageText = errorMessage.getText();
+            softAssert.assertTrue(errorMessageText.contains("We can’t seem to find what you’re looking for. Try another search."), "Error message not displayed!");
+        }
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void ClearButton() throws InterruptedException {
+        //finding the main frame and switching to it
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        WebElement checkInCalendarButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]")));
+        checkInCalendarButton.click();
+
+        //performing the selection of today
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+
+        String formattedDate1 = today.format(formatter);
+        String datesButton = String.format("//button[@aria-label='%s']", formattedDate1);
+
+        WebElement dateButtonCheckIn1 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(datesButton)));
+        dateButtonCheckIn1.click();
+
+        //check if the checkout calendar is opened automatically
+        WebElement checkOutCalendarFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]")));
+        boolean checkOutCalendarDisplayed= checkOutCalendarFrame.isDisplayed();
+        softAssert.assertTrue(checkOutCalendarDisplayed, "Check Out Calendar is not displayed after selecting a check-in date.");
+
+        //performing the selection of tomorrow as a checkout date
+        // finding the active calendar
+        WebElement activeCalendar = driver.findElement(By.xpath("//div[contains(@class, 'calendar-popup') and not(@hidden)]"));
+        LocalDate futureDate = today.plusDays(10);
+
+        String formattedCheckOutDate = futureDate.format(formatter);
+        WebElement checkOutDatePath = activeCalendar.findElement(By.xpath(String.format(".//button[@aria-label='%s']", formattedCheckOutDate)));
+        Thread.sleep(2000);
+        String isDisabled = checkOutDatePath.getCssValue("disabled");
+        System.out.println(isDisabled);
+        if(Objects.equals(isDisabled, "")) {
+            checkOutDatePath.click();
+            WebElement checkOutDateLabel = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check_out-value\"]")));
+            String cODLText = checkOutDateLabel.getText();
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+            Assert.assertEquals(cODLText, futureDate.format(timeFormatter), "Check Out date did not match.");
+        }else{
+            softAssert.assertEquals(isDisabled, "false", "Cannot select" + futureDate + " as a check out date.");
+        }
+        //finding the search button and click on it
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[5]/button")));
+        searchButton.click();
+        WebElement clearButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"content\"]/div/div[1]/h2/a")));
+        clearButton.click();
+        WebElement standardPageTitle = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/div/div[1]/h2")));
+        String sPTToText = standardPageTitle.getText();
+        softAssert.assertEquals(sPTToText, "Our Rooms","Standard Page was not loaded.");
+    }
+
+    @Test
+    private void StandardSuiteImage(){
+        //finding the main frame and switching to it
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+
+        //search the image of standard suite and check if correct
+        WebElement image = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"content\"]/div/div[2]/div/ul/li[1]/div/div[1]/img")));
+        String imageUrl = image.getAttribute("src").toString();
+        System.out.println(imageUrl);
+        softAssert.assertTrue(imageUrl.contains("ij8o0FbW0FEDKMu4SmcG_large.jpg"), "Image is not the one expected!");
+        softAssert.assertAll();
     }
 }
