@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 //--
 //--
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -818,5 +819,98 @@ public class RoomsPage_TestNG {
         System.out.println(imageUrl);
         softAssert.assertTrue(imageUrl.contains("ij8o0FbW0FEDKMu4SmcG_large.jpg"), "Image is not the one expected!");
         softAssert.assertAll();
+    }
+
+    @Test
+    private void StandardSuiteDescription() throws InterruptedException {
+        //finding the main frame and switching to it
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        driver.switchTo().frame(mainFrame);
+        Thread.sleep(5000);
+
+        // Validate "Size" text
+        WebElement sizeElement = driver.findElement(By.cssSelector("li.size span[stranslate='room.SIZE'] .strans"));
+        String sizeText = sizeElement.getText();
+        softAssert.assertEquals(sizeText, "Size");
+
+        // Validate "Beds" text
+        WebElement bedsElement = driver.findElement(By.cssSelector("li.beds span[stranslate='room.BEDS'] .strans"));
+        String bedsText = bedsElement.getText();
+        softAssert.assertEquals(bedsText, "Beds");
+
+        // Validate "Size" value
+        WebElement sizeValueElement = driver.findElement(By.cssSelector("li.size abbr"));
+        String sizeValue = sizeValueElement.getText().trim();
+        softAssert.assertEquals(sizeValue, "100 sq m");
+
+        // Validate "Beds" values
+        WebElement bedsValueElement = driver.findElement(By.cssSelector("#content > div > div.content-body > div > ul > li:nth-child(1) > div > div.info > div.description > div > ul > li.beds > span:nth-child(3) > span > span"));
+        String bedsValue = bedsValueElement.getText();
+        softAssert.assertEquals(bedsValue, "1 Double(s)");
+
+        WebElement bedsValueElement2 = driver.findElement(By.cssSelector("#content > div > div.content-body > div > ul > li:nth-child(1) > div > div.info > div.description > div > ul > li.beds > span:nth-child(4) > span > span"));
+        String bedsValue2 = bedsValueElement2.getText();
+        softAssert.assertEquals(bedsValue2, "1 King(s)");
+
+        softAssert.assertAll();
+    }
+
+    @Test
+    private void AmenitiesStandardSuite() throws InterruptedException {
+        //finding the main frame and switching to it
+        SoftAssert softAssert = new SoftAssert();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        SwitchToRoomsPage();
+        WebElement mainFrame = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
+        Thread.sleep(5000);
+        // Scroll down to the amenities section
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0, 250)");
+        driver.switchTo().frame(mainFrame);
+        // Hover over the AC button
+        WebElement acButton = driver.findElement(By.cssSelector("div[tooltip='A/C']"));
+        Actions action = new Actions(driver);
+        action.moveToElement(acButton).perform();
+        // Validate the corresponding text appeared
+        WebElement acTooltip = driver.findElement(By.cssSelector("div[tooltip='A/C'] .strans"));
+        softAssert.assertTrue(acTooltip.isDisplayed());
+
+        // Hover over the TV button
+        WebElement tvButton = driver.findElement(By.cssSelector("div[tooltip='TV']"));
+        action.moveToElement(tvButton).perform();
+        // Validate the corresponding text appeared
+        WebElement tvTooltip = driver.findElement(By.cssSelector("div[tooltip='TV'] .strans"));
+        softAssert.assertTrue(tvTooltip.isDisplayed());
+
+        // Hover over the Shower button
+        WebElement showerButton = driver.findElement(By.cssSelector("div[tooltip='Shower']"));
+        action.moveToElement(showerButton).perform();
+        // Validate the corresponding text appeared
+        WebElement showerTooltip = driver.findElement(By.cssSelector("div[tooltip='Shower'] .strans"));
+        softAssert.assertTrue(showerTooltip.isDisplayed());
+
+        // Hover over the Telephone button
+        WebElement telephoneButton = driver.findElement(By.cssSelector("div[tooltip='Telephone']"));
+        action.moveToElement(telephoneButton).perform();
+        // Validate the corresponding text appeared
+        WebElement telephoneTooltip = driver.findElement(By.cssSelector("div[tooltip='Telephone'] .strans"));
+        softAssert.assertTrue(telephoneTooltip.isDisplayed());
+
+        // Hover over the Bath button
+        WebElement bathButton = driver.findElement(By.cssSelector("div[tooltip='Bath']"));
+        action.moveToElement(bathButton).perform();
+        // Validate the corresponding text appeared
+        WebElement bathTooltip = driver.findElement(By.cssSelector("div[tooltip='Bath'] .strans"));
+        softAssert.assertTrue(bathTooltip.isDisplayed());
+
+        //Hover over the more info button
+        WebElement moreInfoButton = driver.findElement(By.cssSelector("span.more"));
+        action.moveToElement(moreInfoButton).perform();
+        // Validate the corresponding text appeared
+        WebElement moreInfoTooltip = driver.findElement(By.xpath("//*[@id=\"content\"]/div/div[2]/div/ul/li[1]/div/div[1]/span/span"));
+        softAssert.assertTrue(moreInfoTooltip.isDisplayed());
     }
 }
