@@ -533,7 +533,8 @@ public class Calendar_TestNG{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
         String formattedCheckInDate = today.format(formatter);
         String checkInDatePath = String.format("//button[@aria-label='%s']", formattedCheckInDate);
-        WebElement checkInDateButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(checkInDatePath)));
+        WebElement checkInDateButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(checkInDatePath)));
+        Thread.sleep(3000);
         checkInDateButton.click();
         driver.switchTo().defaultContent();
 
@@ -565,6 +566,7 @@ public class Calendar_TestNG{
         Color roomsColor = Color.fromString(roomsLink.getCssValue("color"));
         Color expectedColor = Color.fromString("#FFFFFF");
         softAssert.assertTrue(roomsColor.equals(expectedColor), "The color of Rooms menu button did not change when redirected to the Rooms page.");
+
 
         //validate that the form in the rooms page is completed after the search
         driver.switchTo().defaultContent();
